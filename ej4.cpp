@@ -95,50 +95,6 @@ private:
     
     int calculateScore() {
         int totalScore = 0;
-        vector<vector<bool>> visited(boardSize, vector<bool>(boardSize, false));
-        
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                if (board[i][j] != '.' && !visited[i][j]) {
-                    int fragmentLength = 0;
-                    int connections = 0;
-                    
-                    vector<pair<int, int>> queue = {{i, j}};
-                    visited[i][j] = true;
-                    
-                    while (!queue.empty()) {
-                        auto current = queue.front();
-                        queue.erase(queue.begin());
-                        fragmentLength++;
-                        
-                        PipePiece currentPiece = availablePieces[0];
-                        for (auto& piece : availablePieces) {
-                            if (piece.symbol == board[current.first][current.second]) {
-                                currentPiece = piece;
-                                break;
-                            }
-                        }
-                        
-                        for (auto& conn : currentPiece.connections) {
-                            int newRow = current.first + conn.first;
-                            int newCol = current.second + conn.second;
-                            
-                            if (isValidPosition(newRow, newCol) && board[newRow][newCol] != '.') {
-                                connections++;
-                                
-                                if (!visited[newRow][newCol]) {
-                                    visited[newRow][newCol] = true;
-                                    queue.push_back({newRow, newCol});
-                                }
-                            }
-                        }
-                    }
-                    
-                    totalScore += connections * fragmentLength;
-                }
-            }
-        }
-        
         return totalScore;
     }
     
@@ -255,12 +211,6 @@ int main() {
     
     PipeGame game(boardSize);
     
-    cout << "\nReglas del juego:\n";
-    cout << "- Turnos alternados: Jugador coloca una pieza, luego la computadora\n";
-    cout << "- Posicionamiento secuencial: Empezando en (0,0) y avanzando por filas\n";
-    cout << "- Cada conexión vale 1 punto, multiplicado por la longitud del fragmento\n";
-    cout << "- El juego termina cuando el tablero está lleno\n\n";
-       
     while (!game.isGameOver()) {
         game.displayAvailablePieces();
         game.displayBoard();
