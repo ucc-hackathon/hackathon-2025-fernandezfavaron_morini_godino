@@ -212,41 +212,44 @@ public:
         }
     }
 
-    void usuarioMasLibrosPrestados(string fechaInicio, string fechaFin)
+    void usuarioMasLibrosPrestados(const string &fechaInicio, const string &fechaFin)
     {
         int maxPrestamos = 0;
-        int usuarioId = -1;
+        int idxUsuarioMax = -1;
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 20; ++i)
         {
+            if (!usuarios[i])
+                continue; // <- clave
             int cont = 0;
             int id = usuarios[i]->getId();
-            for (int j = 0; j < prestamosCount; j++)
+            for (int j = 0; j < prestamosCount; ++j)
             {
-                if (prestamos[j].idUsuario == id &&
-                    prestamos[j].fechaPrestamo >= fechaInicio &&
-                    prestamos[j].fechaPrestamo <= fechaFin)
+                const auto &p = prestamos[j];
+                if (p.idUsuario == id &&
+                    p.fechaPrestamo >= fechaInicio &&
+                    p.fechaPrestamo <= fechaFin)
                 {
-                    cont++;
+                    ++cont;
                 }
             }
             if (cont > maxPrestamos)
             {
                 maxPrestamos = cont;
-                usuarioId = i;
+                idxUsuarioMax = i;
             }
         }
 
-        if (usuarioId != -1)
+        if (idxUsuarioMax != -1)
         {
-            cout << "Usuario con más libros prestados entre " << fechaInicio << " y " << fechaFin << ":" << endl;
-            cout << "Nombre: " << usuarios[usuarioId]->getNombre() << endl;
-            cout << "ID: " << usuarios[usuarioId]->getId() << endl;
-            cout << "Cantidad de préstamos: " << maxPrestamos << endl;
+            cout << "Usuario con más libros prestados entre " << fechaInicio << " y " << fechaFin << ":\n";
+            cout << "Nombre: " << usuarios[idxUsuarioMax]->getNombre() << "\n";
+            cout << "ID: " << usuarios[idxUsuarioMax]->getId() << "\n";
+            cout << "Cantidad de préstamos: " << maxPrestamos << "\n";
         }
         else
         {
-            cout << "No se encontraron préstamos en ese rango de fechas." << endl;
+            cout << "No se encontraron préstamos en ese rango de fechas.\n";
         }
     }
     ~Biblioteca()
@@ -283,8 +286,8 @@ int main()
 
     // Realizar préstamos
     b.prestarLibro(101, 1, "2023-05-01");
-    b.prestarLibro(102, 2, "2023-05-02");
-    b.prestarLibro(103, 3, "2023-05-03");
+    b.prestarLibro(101, 2, "2023-05-02");
+    b.prestarLibro(101, 3, "2023-05-03");
     b.prestarLibro(104, 4, "2023-05-04");
     b.prestarLibro(105, 5, "2023-05-05");
     b.prestarLibro(106, 1, "2023-05-06");
@@ -294,7 +297,7 @@ int main()
     b.prestarLibro(110, 5, "2023-05-10");
 
     // Devolver algunos libros
-    b.devolverLibro(101, 1, "2023-06-01");
+    b.devolverLibro(104, 4, "2023-06-01");
     b.devolverLibro(102, 2, "2023-06-02");
 
     // Probar métodos
@@ -315,6 +318,5 @@ int main()
 
     cout << "\n--- Usuario con más libros prestados entre 2023-05-01 y 2023-05-10 ---\n";
     b.usuarioMasLibrosPrestados("2023-05-01", "2023-05-10");
-    b.~Biblioteca();
     return 0;
 }
