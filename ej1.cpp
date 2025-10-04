@@ -220,7 +220,7 @@ public:
         for (int i = 0; i < 20; ++i)
         {
             if (!usuarios[i])
-                continue; // <- clave
+                continue;
             int cont = 0;
             int id = usuarios[i]->getId();
             for (int j = 0; j < prestamosCount; ++j)
@@ -265,14 +265,12 @@ int main()
 {
     Biblioteca b;
 
-    // Crear usuarios
     b.usuarios[0] = new Alumno("Juan", 1, "A001", 2023);
     b.usuarios[1] = new Alumno("Ana", 2, "A002", 2022);
     b.usuarios[2] = new Profesor("Carlos", 3, "P001", "Matematica");
     b.usuarios[3] = new Profesor("Laura", 4, "P002", "Historia");
     b.usuarios[4] = new Alumno("Pedro", 5, "A003", 2021);
 
-    // Crear libros
     b.libros[0] = Libro(101, "C++ Básico", "Bjarne", 2010, "Programacion");
     b.libros[1] = Libro(102, "Historia Universal", "Smith", 2005, "Historia");
     b.libros[2] = Libro(103, "Matematica I", "Euler", 2000, "Matematica");
@@ -284,7 +282,6 @@ int main()
     b.libros[8] = Libro(109, "Arte", "Da Vinci", 2003, "Arte");
     b.libros[9] = Libro(110, "Programacion Avanzada", "Stroustrup", 2018, "Programacion");
 
-    // Realizar préstamos
     b.prestarLibro(101, 1, "2023-05-01");
     b.prestarLibro(101, 2, "2023-05-02");
     b.prestarLibro(101, 3, "2023-05-03");
@@ -296,11 +293,9 @@ int main()
     b.prestarLibro(109, 4, "2023-05-09");
     b.prestarLibro(110, 5, "2023-05-10");
 
-    // Devolver algunos libros
     b.devolverLibro(104, 4, "2023-06-01");
     b.devolverLibro(102, 2, "2023-06-02");
 
-    // Probar métodos
     cout << "\n--- Libros Prestados ---\n";
     b.listarLibrosPrestados();
 
