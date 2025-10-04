@@ -111,15 +111,15 @@ public:
         cout << "\nTablero actual:\n";
         cout << "  ";
         for (int j = 0; j < boardSize; j++) {
-            cout << " " << j << " ";
+            cout << "|" << j+1;
         }
         cout << "\n";
         
         for (int i = 0; i < boardSize; i++) {
-            cout << i << " ";
+            cout << i+1 << " ";
             for (int j = 0; j < boardSize; j++) {
                 if (board[i][j] == '.') {
-                    cout << " . ";
+                    cout << "| ";
                 } else {
                     string description = "?";
                     for (auto& piece : gamePieces) {
@@ -128,7 +128,7 @@ public:
                             break;
                         }
                     }
-                    cout << " " << description << " ";
+                    cout << "|" << description;
                 }
             }
             cout << "\n";
