@@ -1,55 +1,61 @@
 #include <iostream>
 using namespace std;
 
-struct Libro {
+struct Libro
+{
     int codigo;
     string titulo;
     string autor;
     int año;
-    string categoria;    
+    string categoria;
     bool prestado;
     int total_prestamos;
 
     Libro() = default;
     Libro(int c, string t, string a, int año, string cat)
-    : codigo(c), titulo(t), autor(a), año(año), categoria(cat),
-    prestado(false), total_prestamos(0) {}
+        : codigo(c), titulo(t), autor(a), año(año), categoria(cat),
+          prestado(false), total_prestamos(0) {}
 };
 
-class Usuario {
-    private:
+class Usuario
+{
+private:
     string nombre;
     int id;
-    public:
+
+public:
     Usuario() = default;
     Usuario(string n, int i) : nombre(n), id(i) {}
     string getNombre() const { return nombre; }
     int getId() const { return id; }
 };
 
-class Alumno : public Usuario {
+class Alumno : public Usuario
+{
     string legajo;
     int año;
-    public:
+
+public:
     Alumno() = default;
-    Alumno(string n, int i, string l, int a) : 
-    Usuario(n,i), legajo(l), año(a) {}
+    Alumno(string n, int i, string l, int a) : Usuario(n, i), legajo(l), año(a) {}
     string getLegajo() const { return legajo; }
     int getAño() const { return año; }
 };
 
-class Profesor : public Usuario {
+class Profesor : public Usuario
+{
     string legajo;
     string area;
-    public:
+
+public:
     Profesor() = default;
-    Profesor(string n, int i, string l, string a) :
-    Usuario(n, i), legajo(l), area(a) {}
+    Profesor(string n, int i, string l, string a) : Usuario(n, i), legajo(l), area(a) {}
     string getLegajo() const { return legajo; }
     string getArea() const { return area; }
 };
 
-struct Prestamo {
+struct Prestamo
+{
     int codigoLibro;
     int idUsuario;
     string fechaPrestamo;
@@ -57,16 +63,38 @@ struct Prestamo {
     string fechaDevolucion;
 };
 
-class Biblioteca {
+class Biblioteca
+{
+public:
     Libro libros[100];
-    Usuario* usuarios[20];
+    Usuario *usuarios[20];
     Prestamo prestamos[200];
     int prestamosCount = 0;
 
-    public:
-    void prestarLibro(int codigoLibro, int idUsuario, string fecha) {
-        for (int i = 0; i < 100; i++) {
-            if (libros[i].codigo == codigoLibro && !libros[i].prestado) {
+    void agregarAlumno(string nombre, int id, string legajo, int año)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            if (usuarios[i] == nullptr)
+            {
+                usuarios[i] = new Alumno(nombre, id, legajo, año);
+                return;
+            }
+            else
+            {
+                delete usuarios[i];
+                usuarios[i] = new Alumno(nombre, id, legajo, año);
+            }
+        }
+        cout << "No hay espacio para más usuarios." << endl;
+    }
+
+    void prestarLibro(int codigoLibro, int idUsuario, string fecha)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            if (libros[i].codigo == codigoLibro && !libros[i].prestado)
+            {
                 libros[i].prestado = true;
                 libros[i].total_prestamos++;
                 prestamos[prestamosCount++] = {codigoLibro, idUsuario, fecha, false, ""};
@@ -77,13 +105,18 @@ class Biblioteca {
         cout << "Libro no disponible" << endl;
     }
 
-    void devolverLibro(int codigoLibro, int idUsuario, string fecha) {
-        for (int i = 0; i < prestamosCount; i++) {
-            if (prestamos[i].codigoLibro == codigoLibro && prestamos[i].idUsuario == idUsuario && !prestamos[i].devuelto) {
+    void devolverLibro(int codigoLibro, int idUsuario, string fecha)
+    {
+        for (int i = 0; i < prestamosCount; i++)
+        {
+            if (prestamos[i].codigoLibro == codigoLibro && prestamos[i].idUsuario == idUsuario && !prestamos[i].devuelto)
+            {
                 prestamos[i].devuelto = true;
                 prestamos[i].fechaDevolucion = fecha;
-                for (int j = 0; j < 100; j++) {
-                    if (libros[j].codigo == codigoLibro) {
+                for (int j = 0; j < 100; j++)
+                {
+                    if (libros[j].codigo == codigoLibro)
+                    {
                         libros[j].prestado = false;
                         cout << "Libro devuelto" << endl;
                         return;
@@ -93,9 +126,12 @@ class Biblioteca {
         }
     }
 
-    void listarLibrosPrestados() {
-        for (int i = 0; i < prestamosCount; i++) {
-            if (!prestamos[i].devuelto){
+    void listarLibrosPrestados()
+    {
+        for (int i = 0; i < prestamosCount; i++)
+        {
+            if (!prestamos[i].devuelto)
+            {
                 cout << "Codigo Libro: " << prestamos[i].codigoLibro << endl;
                 cout << "ID Usuario: " << prestamos[i].idUsuario << endl;
                 cout << "Fecha Prestamo: " << prestamos[i].fechaPrestamo << endl;
@@ -104,9 +140,12 @@ class Biblioteca {
         }
     }
 
-    void listarLibrosDisponibles() {
-        for (int i = 0; i < 100; i++) {
-            if (!libros[i].prestado) {
+    void listarLibrosDisponibles()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            if (!libros[i].prestado && libros[i].codigo != 0)
+            {
                 cout << "Codigo: " << libros[i].codigo << endl;
                 cout << "Titulo: " << libros[i].titulo << endl;
                 cout << "Autor: " << libros[i].autor << endl;
@@ -117,9 +156,12 @@ class Biblioteca {
         }
     }
 
-    void buscarLibroPorAutor(string autor) {
-        for (int i = 0; i < 100; i++) {
-            if (libros[i].autor == autor) {
+    void buscarLibroPorAutor(string autor)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            if (libros[i].autor == autor)
+            {
                 cout << "Codigo: " << libros[i].codigo << endl;
                 cout << "Titulo: " << libros[i].titulo << endl;
                 cout << "Año: " << libros[i].año << endl;
@@ -129,9 +171,12 @@ class Biblioteca {
         }
     }
 
-    void buscarLibroPorCategoria(string categoria) {
-        for (int i = 0; i < 100; i++) {
-            if (libros[i].categoria == categoria) {
+    void buscarLibroPorCategoria(string categoria)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            if (libros[i].categoria == categoria)
+            {
                 cout << "Codigo: " << libros[i].codigo << endl;
                 cout << "Titulo: " << libros[i].titulo << endl;
                 cout << "Autor: " << libros[i].autor << endl;
@@ -142,18 +187,23 @@ class Biblioteca {
         }
     }
 
-    void librosMasPrestados() {
-        for (int i = 0; i < 100 - 1; i++) {
-            for (int j = 0; j < 100 - i - 1; j++) {
-                if (libros[j].total_prestamos < libros[j+1].total_prestamos) {
+    void librosMasPrestados()
+    {
+        for (int i = 0; i < 100 - 1; i++)
+        {
+            for (int j = 0; j < 100 - i - 1; j++)
+            {
+                if (libros[j].total_prestamos < libros[j + 1].total_prestamos)
+                {
                     Libro temp = libros[j];
-                    libros[j] = libros[j+1];
-                    libros[j+1] = temp;
+                    libros[j] = libros[j + 1];
+                    libros[j + 1] = temp;
                 }
             }
         }
         cout << "Los 3 libros más prestados:" << endl;
-        for (int i = 0; i < 3 && i < 100; i++) {
+        for (int i = 0; i < 3; i++)
+        {
             cout << "Codigo: " << libros[i].codigo << endl;
             cout << "Titulo: " << libros[i].titulo << endl;
             cout << "Autor: " << libros[i].autor << endl;
@@ -162,38 +212,54 @@ class Biblioteca {
         }
     }
 
-    void usuarioMasLibrosPrestados(string fechaInicio, string fechaFin) {
+    void usuarioMasLibrosPrestados(string fechaInicio, string fechaFin)
+    {
         int maxPrestamos = 0;
         int usuarioId = -1;
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++)
+        {
             int cont = 0;
             int id = usuarios[i]->getId();
-            for (int j = 0; j < prestamosCount; j++) {
+            for (int j = 0; j < prestamosCount; j++)
+            {
                 if (prestamos[j].idUsuario == id &&
                     prestamos[j].fechaPrestamo >= fechaInicio &&
-                    prestamos[j].fechaPrestamo <= fechaFin) {
+                    prestamos[j].fechaPrestamo <= fechaFin)
+                {
                     cont++;
                 }
             }
-            if (cont > maxPrestamos) {
+            if (cont > maxPrestamos)
+            {
                 maxPrestamos = cont;
                 usuarioId = i;
             }
         }
 
-        if (usuarioId != -1) {
+        if (usuarioId != -1)
+        {
             cout << "Usuario con más libros prestados entre " << fechaInicio << " y " << fechaFin << ":" << endl;
             cout << "Nombre: " << usuarios[usuarioId]->getNombre() << endl;
             cout << "ID: " << usuarios[usuarioId]->getId() << endl;
             cout << "Cantidad de préstamos: " << maxPrestamos << endl;
-        } else {
+        }
+        else
+        {
             cout << "No se encontraron préstamos en ese rango de fechas." << endl;
+        }
+    }
+    ~Biblioteca()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            delete usuarios[i];
         }
     }
 };
 
-int main() {
+int main()
+{
     Biblioteca b;
 
     // Crear usuarios
@@ -249,11 +315,6 @@ int main() {
 
     cout << "\n--- Usuario con más libros prestados entre 2023-05-01 y 2023-05-10 ---\n";
     b.usuarioMasLibrosPrestados("2023-05-01", "2023-05-10");
-
-    // Liberar memoria de usuarios
-    for (int i = 0; i < 5; i++) {
-        delete b.usuarios[i];
-    }
-
+    b.~Biblioteca();
     return 0;
 }
