@@ -8,13 +8,13 @@ using namespace std;
 
 // Estructura para representar una pieza de tubería
 struct PipePiece {
-    char ascii_code;
     char symbol;
     string description;
-    vector<pair<int, int>> connections; // Direcciones de conexión (dx, dy)
+    vector<pair<int, int>> connections;
     
-    PipePiece(char code, char sym, string desc, vector<pair<int, int>> conn) 
-        : ascii_code(code), symbol(sym), description(desc), connections(conn) {}
+    PipePiece(){};
+    PipePiece(char sym, string desc, vector<pair<int, int>> conn) 
+        : symbol(sym), description(desc), connections(conn) {}
 };
 
 class PipeGame {
@@ -23,24 +23,24 @@ private:
     vector<vector<char>> board;
     vector<PipePiece> availablePieces;
     vector<PipePiece> gamePieces;
-    int currentRow, currentCol;  // Posición actual para colocación secuencial
+    int currentRow, currentCol;
     int score;
     bool isPlayerTurn;
     
     // Inicializar las piezas dobles según las especificaciones
     void initializePieces() {
         gamePieces = {
-            PipePiece(1, (char)185, "╣", {{-1, 0}, {1, 0}, {0, -1}}),
-            PipePiece(2, (char)186, "║", {{-1, 0}, {1, 0}}),
-            PipePiece(3, (char)187, "╗", {{-1, 0}, {0, -1}}),
-            PipePiece(4, (char)188, "╝", {{1, 0}, {0, -1}}),
-            PipePiece(5, (char)200, "╚", {{1, 0}, {0, 1}}),
-            PipePiece(6, (char)201, "╔", {{-1, 0}, {0, 1}}),
-            PipePiece(7, (char)202, "╩", {{0, -1}, {0, 1}, {1, 0}}),
-            PipePiece(8, (char)203, "╦", {{0, -1}, {0, 1}, {-1, 0}}),
-            PipePiece(9, (char)204, "╠", {{-1, 0}, {1, 0}, {0, 1}}),
-            PipePiece(10, (char)205, "═", {{0, -1}, {0, 1}}),
-            PipePiece(11, (char)206, "╬", {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}),
+            PipePiece((char)185, "╣", {{-1, 0}, {1, 0}, {0, -1}}),
+            PipePiece((char)186, "║", {{-1, 0}, {1, 0}}),
+            PipePiece((char)187, "╗", {{-1, 0}, {0, -1}}),
+            PipePiece((char)188, "╝", {{1, 0}, {0, -1}}),
+            PipePiece((char)200, "╚", {{1, 0}, {0, 1}}),
+            PipePiece((char)201, "╔", {{-1, 0}, {0, 1}}),
+            PipePiece((char)202, "╩", {{0, -1}, {0, 1}, {1, 0}}),
+            PipePiece((char)203, "╦", {{0, -1}, {0, 1}, {-1, 0}}),
+            PipePiece((char)204, "╠", {{-1, 0}, {1, 0}, {0, 1}}),
+            PipePiece((char)205, "═", {{0, -1}, {0, 1}}),
+            PipePiece((char)206, "╬", {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}),
         };
 
         availablePieces.clear();
@@ -81,18 +81,21 @@ private:
             return false;
         }
         
-        PipePiece piece = availablePieces[pieceIndex - 1];
-        availablePieces.erase(availablePieces.begin() + (pieceIndex - 1));
+        PipePiece piece;
+        if (isPlayerTurn) {
+            piece = availablePieces[pieceIndex - 1];
+            availablePieces.erase(availablePieces.begin() + (pieceIndex - 1));
+        } else {
+            piece = gamePieces[rand() % 11];
+        }
         board[currentRow][currentCol] = piece.symbol;
         advancePosition();
         return true;
     }
     
-    // Colocar pieza aleatoria de la computadora
     void placeComputerPiece() {
         if (!isBoardFull()) {
-            int randomIndex = rand() % availablePieces.size() + 1;
-            placePieceAtCurrentPosition(randomIndex);
+            placePieceAtCurrentPosition(1);
         }
     }
     
@@ -175,7 +178,7 @@ public:
                 } else {
                     // Buscar la descripción del símbolo
                     string description = "?";
-                    for (auto& piece : availablePieces) {
+                    for (auto& piece : gamePieces) {
                         if (piece.symbol == board[i][j]) {
                             description = piece.description;
                             break;
