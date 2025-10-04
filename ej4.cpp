@@ -6,7 +6,6 @@
 
 using namespace std;
 
-// Estructura para representar una pieza de tubería
 struct PipePiece {
     char symbol;
     string description;
@@ -27,7 +26,6 @@ private:
     int score;
     bool isPlayerTurn;
     
-    // Inicializar las piezas dobles según las especificaciones
     void initializePieces() {
         gamePieces = {
             PipePiece((char)185, "╣", {{-1, 0}, {1, 0}, {0, -1}}),
@@ -52,7 +50,6 @@ private:
         }
     }
     
-    // Avanzar a la siguiente posición secuencial
     void advancePosition() {
         currentCol++;
         if (currentCol >= boardSize) {
@@ -61,17 +58,14 @@ private:
         }
     }
     
-    // Verificar si el tablero está lleno
     bool isBoardFull() {
         return currentRow >= boardSize;
     }
     
-    // Verificar si una posición es válida
     bool isValidPosition(int row, int col) {
         return row >= 0 && row < boardSize && col >= 0 && col < boardSize;
     }
     
-    // Colocar una pieza en la posición actual
     bool placePieceAtCurrentPosition(int pieceIndex) {
         if (pieceIndex < 1 || pieceIndex > availablePieces.size()) {
             return false;
@@ -99,7 +93,6 @@ private:
         }
     }
     
-    // Calcular puntuación basada en conexiones
     int calculateScore() {
         int totalScore = 0;
         vector<vector<bool>> visited(boardSize, vector<bool>(boardSize, false));
@@ -110,7 +103,6 @@ private:
                     int fragmentLength = 0;
                     int connections = 0;
                     
-                    // BFS para encontrar el fragmento conectado
                     vector<pair<int, int>> queue = {{i, j}};
                     visited[i][j] = true;
                     
@@ -119,7 +111,6 @@ private:
                         queue.erase(queue.begin());
                         fragmentLength++;
                         
-                        // Buscar la pieza actual
                         PipePiece currentPiece = availablePieces[0];
                         for (auto& piece : availablePieces) {
                             if (piece.symbol == board[current.first][current.second]) {
@@ -128,7 +119,6 @@ private:
                             }
                         }
                         
-                        // Contar conexiones y explorar vecinos
                         for (auto& conn : currentPiece.connections) {
                             int newRow = current.first + conn.first;
                             int newCol = current.second + conn.second;
@@ -161,7 +151,6 @@ public:
         initializePieces();
     }
     
-    // Mostrar el tablero
     void displayBoard() {
         cout << "\nTablero actual:\n";
         cout << "  ";
@@ -176,7 +165,6 @@ public:
                 if (board[i][j] == '.') {
                     cout << " . ";
                 } else {
-                    // Buscar la descripción del símbolo
                     string description = "?";
                     for (auto& piece : gamePieces) {
                         if (piece.symbol == board[i][j]) {
@@ -192,7 +180,6 @@ public:
         cout << "\n";
     }
     
-    // Mostrar todas las piezas disponibles
     void displayAvailablePieces() {
         cout << "\nPiezas disponibles:\n";
         for (int i = 0; i < availablePieces.size(); i++) {
@@ -201,7 +188,6 @@ public:
         cout << "\n";
     }
     
-    // Colocar una pieza del jugador
     bool placePlayerPiece(int pieceIndex) {
         if (!isPlayerTurn) {
             cout << "No es tu turno!\n";
@@ -223,7 +209,6 @@ public:
         }
     }
     
-    // Turno de la computadora
     void computerTurn() {
         if (isPlayerTurn) {
             cout << "No es el turno de la computadora!\n";
@@ -237,23 +222,19 @@ public:
         }
     }
     
-    // Verificar si el juego ha terminado
     bool isGameOver() {
         return isBoardFull();
     }
     
-    // Obtener puntuación actual
     int getScore() {
         score = calculateScore();
         return score;
     }
     
-    // Obtener turno actual
     bool getIsPlayerTurn() {
         return isPlayerTurn;
     }
     
-    // Obtener posición actual
     pair<int, int> getCurrentPosition() {
         return {currentRow, currentCol};
     }
